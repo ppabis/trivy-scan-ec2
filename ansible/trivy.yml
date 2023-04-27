@@ -1,0 +1,44 @@
+---
+- hosts: trivy
+  become: yes
+
+  tasks:
+    - name: Check if trivy is present
+      stat:
+        path: /usr/local/bin/trivy
+      register: trivy
+
+    - name: Download trivy package (ARM)
+      get_url:
+        url: https://github.com/aquasecurity/trivy/releases/download/v0.40.0/trivy_0.40.0_Linux-ARM64.tar.gz
+        dest: /tmp/trivy.tar.gz
+        mode: 0644
+      when: ansible_architecture == "aarch64" and trivy.stat.exists == false
+
+    - name: Download trivy package (x86_64)
+      get_url:
+        url: https://github.com/aquasecurity/trivy/releases/download/v0.40.0/trivy_0.40.0_Linux-x86_64.tar.gz
+        dest: /tmp/trivy.tar.gz
+        mode: 0644
+      when: ansible_architecture == "x86_64" and trivy.stat.exists == false
+
+    - name: Ensure /tmp/trivy directory exists
+      file:
+        path: /tmp/trivy
+        state: directory
+        mode: 0755
+
+    - name: Extract trivy package
+      unarchive:
+        src: /tmp/trivy.tar.gz
+        dest: /tmp/trivy
+        remote_src: yes
+        creates: /usr/local/bin/trivy
+
+    - name: Install trivy
+      copy:
+        src: /tmp/trivy/trivy
+        dest: /usr/local/bin/trivy
+        mode: 0755
+        remote_src: yes
+      when: trivy.stat.exists == false

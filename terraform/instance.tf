@@ -21,6 +21,10 @@ output "ubuntu" {
   value = aws_instance.ubuntu.public_ip
 }
 
+output "ubuntu-dns" {
+  value = aws_instance.ubuntu.public_dns
+}
+
 resource "aws_security_group" "ssh" {
   name = "SSH-trivy"
 
