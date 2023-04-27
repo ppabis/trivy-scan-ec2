@@ -1,9 +1,13 @@
 variable "results-bucket-name" {
-  type = string
+  type    = string
   default = "trivy-results-bucket"
 }
 
 variable "ssh-subnet" {
-  type = string
+  type    = string
   default = "0.0.0.0/0"
+}
+
+variable "email" {
+  type = string
 }
