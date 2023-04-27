@@ -42,3 +42,23 @@
         mode: 0755
         remote_src: yes
       when: trivy.stat.exists == false
+
+    - name: Install required Python packages
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install boto3 with pip
+      pip:
+        name: boto3
+        state: present
+
+    - name: Copy process-results.py script
+      copy:
+        src: process-results.py
+        dest: /usr/local/lib/process-results.py
+        mode: 0755
