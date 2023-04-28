@@ -19,8 +19,8 @@ resource "aws_iam_instance_profile" "ec2-trivy" {
 }
 
 resource "aws_iam_policy" "trivy-results" {
-    name = "Trivy-Results"
-    policy = <<-EOF
+  name   = "Trivy-Results"
+  policy = <<-EOF
     {
       "Version": "2012-10-17",
       "Statement": [
@@ -49,6 +49,6 @@ resource "aws_iam_policy" "trivy-results" {
 }
 
 resource "aws_iam_role_policy_attachment" "trivy-results" {
-    role = aws_iam_role.ec2-trivy.name
-    policy_arn = aws_iam_policy.trivy-results.arn
+  role       = aws_iam_role.ec2-trivy.name
+  policy_arn = aws_iam_policy.trivy-results.arn
 }
