@@ -43,7 +43,7 @@
         remote_src: yes
       when: trivy.stat.exists == false
 
-    - name: Install required Python packages
+    - name: Install required packages
       apt:
         update_cache: yes
         cache_valid_time: 3600
@@ -62,3 +62,12 @@
         src: process-results.py
         dest: /usr/local/lib/process-results.py
         mode: 0755
+
+    - name: Add cron script to scan periodically
+      cron:
+        name: "trivy_scan"
+        minute: "15"
+        hour: "4"
+        job: "/usr/local/bin/trivy rootfs / --scanners vuln --format json --output /tmp/scan.json && /usr/bin/python3 /usr/local/lib/process-results.py /tmp/scan.json && rm /tmp/scan.json"
+        state: present
+        user: ubuntu
